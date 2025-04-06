@@ -45,6 +45,8 @@ result.ipynb
 *.pdf
 *.out
 *.log
+lora/exampleA/*
+lora/exampleB/*
 
 #Ignore Wandb
 wandb/
