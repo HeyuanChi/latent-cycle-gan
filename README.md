@@ -1,7 +1,6 @@
 # latent-cycle-gan
 
-<img src="https://github.com/HeyuanChi/latent-cycle-gan/tree/main/imgs/latent-cycle-gan.jpg" width="800px"/>
-
+![method](.imgs/latent-cycle-gan.jpg)
 
 This is the code for the Computer Vision 24/25ws final project.
 
@@ -36,6 +35,3 @@ bash ./train.sh
 ```bash
 bash ./test.sh
 ```
-
-### Apply a pre-trained model
-- The pretrained model is saved at `./checkpoints/`.
