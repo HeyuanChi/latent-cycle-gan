@@ -1,6 +1,6 @@
 # latent-cycle-gan
 
-![method](.imgs/latent-cycle-gan.jpg)
+![method](./imgs/latent-cycle-gan.jpg)
 
 This is the code for the Computer Vision 24/25ws final project.
 
