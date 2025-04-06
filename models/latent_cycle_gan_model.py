@@ -25,11 +25,14 @@ class LatentCycleGANModel(BaseModel):
             # SD
             parser.add_argument('--stable_diffusion_dir', type=str, default='stable-diffusion-v1-5/stable-diffusion-v1-5')
             # LoRA
-            parser.add_argument('--lora_vangogh_dir', type=str, default='/root/autodl-tmp/diffusers/output/output-vangogh/checkpoint-5000')
-            parser.add_argument('--lora_photo_dir',   type=str, default='/root/autodl-tmp/diffusers/output/output-photo/checkpoint-5000')
+            parser.add_argument('--lora_A_dir', type=str, default='/root/autodl-tmp/diffusers/outputs/output-vangogh/checkpoint-5000')
+            parser.add_argument('--lora_B_dir',   type=str, default='/root/autodl-tmp/diffusers/outputs/output-photo/checkpoint-5000')
             # prompt
             parser.add_argument('--text_prompt_vangogh', type=str, default='a paint of vangogh')
             parser.add_argument('--text_prompt_photo',   type=str, default='a realistic photograph')
+            # init with cycle gan
+            parser.add_argument('--init_with_cycle_gan', type=bool, default=False)
+            parser.add_argument('--cycle_gan_dir', type=str, default='/root/autodl-tmp/pytorch-CycleGAN-and-pix2pix/checkpoints/vangogh2photo/')
             
         return parser
 
@@ -61,6 +64,8 @@ class LatentCycleGANModel(BaseModel):
             opt.output_nc, opt.input_nc, opt.ngf, opt.netG, opt.norm,
             not opt.no_dropout, opt.init_type, opt.init_gain, self.gpu_ids
         )
+        if self.isTrain and self.opt.init_with_cycle_gan:
+            self.load_networks(epoch='latest', model_names=['G_A', 'G_B'], load_dir=self.opt.cycle_gan_dir)
         if self.isTrain:  # define discriminators
             self.netD_A = networks.define_D(
                 opt.output_nc, opt.ndf, opt.netD, opt.n_layers_D,
@@ -70,6 +75,8 @@ class LatentCycleGANModel(BaseModel):
                 opt.input_nc, opt.ndf, opt.netD, opt.n_layers_D,
                 opt.norm, opt.init_type, opt.init_gain, self.gpu_ids
             )
+            if self.opt.init_with_cycle_gan:
+                self.load_networks(epoch='latest', model_names=['D_A', 'D_B'], load_dir=self.opt.cycle_gan_dir)
             # latent discriminators
             self.netD_LA = networks.define_D(
                 input_nc=4, ndf=64, netD='basic', n_layers_D=3, norm=opt.norm,
@@ -90,7 +97,7 @@ class LatentCycleGANModel(BaseModel):
                 requires_safety_checker=False,
                 local_files_only=True
             ).to(self.device)
-            self.pipeA.load_lora_weights(opt.lora_vangogh_dir)
+            self.pipeA.load_lora_weights(opt.lora_A_dir)
             self.pipeA.vae.requires_grad_(False)
             self.pipeA.unet.requires_grad_(False)
 
@@ -102,7 +109,7 @@ class LatentCycleGANModel(BaseModel):
                 requires_safety_checker=False,
                 local_files_only=True
             ).to(self.device)
-            self.pipeB.load_lora_weights(opt.lora_photo_dir)
+            self.pipeB.load_lora_weights(opt.lora_B_dir)
             self.pipeB.vae.requires_grad_(False)
             self.pipeB.unet.requires_grad_(False)
 
@@ -233,6 +240,8 @@ class LatentCycleGANModel(BaseModel):
             # text prompt
             emb = pipe.tokenizer(prompt, return_tensors="pt").input_ids.to(self.device)
             text_emb = pipe.text_encoder(emb)[0]
+            real_batch_size = rec.size(0)
+            text_emb = text_emb.repeat(real_batch_size, 1, 1)
         # sample t
         t_max = max(int(1000 * ratio / 4), 1)  # t_max >= 1
         t = np.random.randint(0, t_max)
