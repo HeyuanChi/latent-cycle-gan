@@ -1,4 +1,3 @@
-```markdown
 # Latent-CycleGAN
 
 ![method](./imgs/latent-cycle-gan.jpg)
