@@ -7,7 +7,7 @@ This repository contains the code for our **Computer Vision 2024/25 WS** final p
 - The **core** Latent-CycleGAN code is located in:  
   `./models/latent_cycle_gan_model.py`
 
----
+
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ This repository contains the code for our **Computer Vision 2024/25 WS** final p
 - Python 3.8 (or higher)
 - NVIDIA GPU + CUDA + cuDNN
 
----
+
 
 ## Getting Started
 
@@ -35,7 +35,7 @@ This repository contains the code for our **Computer Vision 2024/25 WS** final p
      ```
      Adjust these steps as needed based on your Python environment.
 
----
+
 
 ### 2. Prepare Stable Diffusion v1.5 and LoRA Checkpoints
 
@@ -49,7 +49,7 @@ Latent-CycleGAN relies on **Stable Diffusion v1.5** plus optional LoRA checkpoin
    - Prepare LoRA checkpoints for domain A (`--lora_A_dir`) and domain B (`--lora_B_dir`), each tuned for SD v1.5.  
    - If you do not plan on using LoRA, either disable these arguments or point them to dummy folders. Note that the latent-cycle-gan model is designed to benefit from LoRA fine-tuning.
 
----
+
 
 ### 3. Dataset Preparation
 
@@ -73,7 +73,7 @@ If needed, you can download a sample CycleGAN dataset (e.g. `vangogh2photo`) wit
 bash ./datasets/download_cyclegan_dataset.sh vangogh2photo
 ```
 
----
+
 
 ### 4. Training: `train.sh` Example
 
@@ -163,7 +163,7 @@ This will start the training process with the specified settings.
 - **`--lr`**  
   Initial learning rate (often `0.0001`).
 
----
+
 
 ### 5. Testing
 
@@ -182,14 +182,14 @@ python $TEST_SCRIPT \
 ```
 
 This command will run inference on (up to) `--num_test` images from your test set, saving the translated results to the default output directory (usually `./results/<name>/test_latest/images/`). If you need to test on the entire set or adjust any other parameters (e.g., batch size, model name), you can modify them directly in the script or pass different flags via the command line.
----
+
 
 ### 6. Checkpoints & Logs
 
 - Checkpoints and logs are stored under `./checkpoints/<name>/`.  
 - You should find model weights (like `latest_net_G_A.pth`) and any generated samples or loss logs there.
 
----
+
 
 ### 7. Common Issues
 
@@ -204,20 +204,19 @@ This command will run inference on (up to) `--num_test` images from your test se
    - LoRA checkpoints must be trained for the same SD v1.5 version.  
    - A mismatch can cause artifacts or script errors.
 
----
+
 
 ### 8. Acknowledgments
 
 - Code builds upon [CycleGAN](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).  
 - LoRA method references [LoRA: Low-Rank Adaptation of Large Language Models](https://arxiv.org/abs/2106.09685).
 
----
+
 
 ## License
 
 This project is released under the [MIT License](./LICENSE) (or specify whichever license applies).
 
----
+
 
 If you have any questions or encounter issues, feel free to open an issue or reach out to the contributors. Good luck with your experiments!
-```
