@@ -165,7 +165,6 @@ This will start the training process with the specified settings.
 
 ---
 
-```markdown
 ### 5. Testing
 
 After training finishes, you can directly run the provided test script:
